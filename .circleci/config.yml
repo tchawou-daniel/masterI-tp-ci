@@ -17,6 +17,7 @@ workflows:
             - build
             - lint
             - e2e-test
+            - test
 jobs:
     build:
         docker:
