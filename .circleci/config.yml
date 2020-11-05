@@ -15,6 +15,11 @@ workflows:
       - buildandpush_docker:
           requires:
             - build
+      -generate_an_artifact:
+          requires:
+            - build
+            - lint
+            - e2e-test
 jobs:
     build:
         docker:
@@ -93,3 +98,26 @@ jobs:
                     docker tag $IMAGE_NAME:app $IMAGE_NAME:latest
                     docker push $IMAGE_NAME:latest
                     docker push $IMAGE_NAME:$CIRCLE_BUILD_NUM
+    generate_an_artifact:
+        docker:
+            - image: cimg/node:12.18
+        steps:
+            - checkout
+            - restore_cache:
+                name: Restore Yarn Package Cache
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
+        working_directory: ~/doc-server
+        steps:
+           - checkout
+           - run: make
+           - run: |
+               # tell the operating system to remove the file size limit on core dump files 
+               ulimit -c unlimited
+               ./dump
+           - run:
+               command: |
+                 mkdir -p /doc-server/doc
+                 cp core.* /tmp/doc
+               when: on_fail
+           - store_artifacts:
+               path: /tmp/core_dumps
