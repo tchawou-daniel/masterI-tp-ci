@@ -18,7 +18,9 @@ jobs:
             - restore_cache:
                 name: Restore Yarn Package Cache
                 key: yarn-packages-v2{{ checksum "yarn.lock" }}
-            - run: yarn global add node-gyp && yarn install
+            - run:
+                name: Install dependencies
+                command: yarn global add node-gyp && yarn install
             - save_cache:
                 name: Save Yarn Package Cache
                 key: yarn-packages-v2{{ checksum "yarn.lock" }}
@@ -30,13 +32,19 @@ jobs:
         steps:
             - checkout
             - restore_cache:
+                name: Restore Yarn Package Cache
                 key: yarn-packages-v2{{ checksum "yarn.lock" }}
-            - run : yarn lint && yarn format:check
+            - run :
+                name: "Lint Code"
+                command: yarn lint && yarn format:check
     test:
         docker:
             - image: cimg/node:12.18
         steps:
             - checkout
             - restore_cache:
+                name: Restore Yarn Package Cache
                 key: yarn-packages-v2{{ checksum "yarn.lock" }}
-            - run : yarn test:ci
+            - run :
+                name: "Unit Test"
+                command: yarn test:ci
