@@ -15,11 +15,12 @@ workflows:
       - buildandpush_docker:
           requires:
             - build
-      -generate_an_artifact:
+      - generate_an_artifact:
           requires:
             - build
             - lint
             - e2e-test
+            - buildandpush_docker
 jobs:
     build:
         docker:
