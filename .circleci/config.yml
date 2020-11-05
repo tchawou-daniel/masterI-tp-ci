@@ -30,7 +30,6 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                name: Restore Yarn Package Cache
                 key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
             - run : yarn lint && yarn format:check
     test:
@@ -39,6 +38,5 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                name: Restore Yarn Package Cache
                 key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
             - run : yarn test:ci
