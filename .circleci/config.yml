@@ -22,14 +22,15 @@ jobs:
           command: yarn global add node-gyp && yarn install
       - restore_cache:
           name: Restore Yarn Package Cache
-          keys:
-              - npm-v1-dependencies-{{ checksum "yarn.lock" }}
+          key:
+            - npm-v1-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependencies
           command: yarn install --immutable
       - save_cache:
           name: Save Yarn Package Cache
-          key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+          key: 
+            - npm-v1-dependencies-{{ checksum "yarn.lock" }}
           paths:
               - ~/.cache/yarn
     lint:
@@ -39,8 +40,8 @@ jobs:
         - checkout
         - restore_cache:
             name: Restore Yarn Package Cache
-            keys:
-            - npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            key:
+              - npm-v1-dependencies-{{ checksum "yarn.lock" }}
         - run:
             name: "Lint Code"
             command: yarn lint && yarn format:check
@@ -51,8 +52,8 @@ jobs:
         - checkout
         - restore_cache:
             name: Restore Yarn Package Cache
-            keys:
-            - npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            key:
+              - npm-v1-dependencies-{{ checksum "yarn.lock" }}
         - run:
             name: "Unit Test"
             command: yarn test:ci
