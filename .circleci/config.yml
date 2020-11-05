@@ -15,7 +15,7 @@ workflows:
 jobs:
     build:
         docker:
-            - image: cimg/node:14.10.1
+            - image: cimg/node:12.18
         steps:
             - checkout
             - restore_cache:
@@ -31,7 +31,7 @@ jobs:
                     - ./node_modules
     lint:
         docker:
-            - image: cimg/node:14.10.1
+            - image: cimg/node:12.18
         steps:
             - checkout
             - restore_cache:
@@ -42,7 +42,7 @@ jobs:
                 command: yarn lint && yarn format:check
     test:
         docker:
-            - image: cimg/node:14.10.1
+            - image: cimg/node:12.18
         steps:
             - checkout
             - restore_cache:
@@ -53,23 +53,22 @@ jobs:
                 command: yarn test:ci
     e2e-test:
         docker:
-        - image: cimg/node:14.10.1
-          environment:
-            DATABASE_URL: postgresql://jordan:mot_de_passe@localhost:5432/psdb
-            JWT_SECRET: mot_de_passe
-            API_PORT: 3000
-            API_HOST: localhost
-            API_PROTOCOL: http
-        - image: circleci/postgres:9.6.2-alpine
-          environment:
-            POSTGRES_USER: jordan
-            POSTGRES_DB: psdb
-            POSTGRES_PASSWORD: mot_de_passe
-        steps:
+            - image: cimg/node:12.18
+                environment: 
+                DATABASE_URL: "postgres://jordan:mot_de_passe@localhost:5432/psdb"
+                API_PORT: 3000
+                API_HOST: localhost
+                API_PROTOCOL: http
+                JWT_SECRET: mot_de_passe
+            - image: circleci/postgres:9.6.2-alpine
+                environment:
+                POSTGRES_USER: jordan
+                POSTGRES_DB: psdb   
+                POSTGRES_PASSWORD: mot_de_passe
+        steps: 
             - checkout
             - restore_cache:
-                name: Restore Yarn Package Cache
-                keys: yarn-packages-v2{{ checksum "yarn.lock" }}
-            - run:
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
+            - run: 
                 name: "E2e Test"
                 command: yarn test:e2e
