@@ -12,6 +12,9 @@ workflows:
       - e2e-test:
           requires:
             - build
+      - buildandpush_docker:
+          requires:
+            - build
 jobs:
     build:
         docker:
