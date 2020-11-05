@@ -4,6 +4,9 @@ workflows:
     build_and_test:
       jobs:
         - build
+        - lint:
+            requires:
+              - build
 jobs:
   build:
     docker:
@@ -24,3 +27,14 @@ jobs:
           key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
           paths:
               - ~/.cache/yarn
+  lint:
+    docker:
+      - image: cimg/node:12.18
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: "Lint Code"
+          command: yarn lint && yarn format:check
