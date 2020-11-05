@@ -85,7 +85,6 @@ jobs:
             - checkout
             - setup_remote_docker
             - run: docker image build --tag $IMAGE_NAME:app .
-            - run: docker load -i /tmp/workspace/image.tar
             - run: 
                 name: Login and Publish to Docker Hub
                 command: |
