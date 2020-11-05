@@ -54,14 +54,14 @@ jobs:
     e2e-test:
         docker:
         - image: cimg/node:14.10.1
-            environment:
+          environment:
             DATABASE_URL: postgresql://jordan:mot_de_passe@localhost:5432/psdb
             JWT_SECRET: mot_de_passe
             API_PORT: 3000
             API_HOST: localhost
             API_PROTOCOL: http
         - image: circleci/postgres:9-postgis-ram
-            environment:
+          environment:
             POSTGRES_USER: jordan
             POSTGRES_DB: psdb
             POSTGRES_PASSWORD: mot_de_passe
