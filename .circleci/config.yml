@@ -1,39 +1,44 @@
 version: 2.1
 workflows:
-    build_and_test:
-      jobs:
-        - build
-        - lint:
-            requires
-              - build
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
 jobs:
-  build:
-    docker:
-      - image: cimg/node:12.18 # the primary container, where your job's commands are run
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: yarn global add node-gyp && yarn install
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --immutable
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
-          paths:
-              - ~/.cache/yarn
-  lint:
-    docker:
-      - image: cimg/node:12.18
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
-      - run:
-          name: "Lint Code"
-          command: yarn lint && yarn format:check
+    build:
+        docker:
+            - image: cimg/node:12.18
+        steps:
+            - checkout
+            - restore_cache:
+                name: Restore Yarn Package Cache
+                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            - run: yarn global add node-gyp && yarn install
+            - save_cache:
+                name: Save Yarn Package Cache
+                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+                paths:
+                    - ./node_modules
+    lint:
+        docker:
+            - image: cimg/node:12.18
+        steps:
+            - checkout
+            - restore_cache:
+                name: Restore Yarn Package Cache
+                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            - run : yarn lint && yarn format:check
+    test:
+        docker:
+            - image: cimg/node:12.18
+        steps:
+            - checkout
+            - restore_cache:
+                name: Restore Yarn Package Cache
+                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            - run : yarn test:ci
