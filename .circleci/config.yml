@@ -17,11 +17,11 @@ jobs:
             - checkout
             - restore_cache:
                 name: Restore Yarn Package Cache
-                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
             - run: yarn global add node-gyp && yarn install
             - save_cache:
                 name: Save Yarn Package Cache
-                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
                 paths:
                     - ./node_modules
     lint:
@@ -30,7 +30,7 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
             - run : yarn lint && yarn format:check
     test:
         docker:
@@ -38,5 +38,5 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                key: npm-v1-dependencies-{{ checksum "yarn.lock" }}
+                key: yarn-packages-v2{{ checksum "yarn.lock" }}
             - run : yarn test:ci
