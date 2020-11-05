@@ -9,6 +9,9 @@ workflows:
       - test:
           requires:
             - build
+      - e2e-test:
+          requires:
+            - build
 jobs:
     build:
         docker:
