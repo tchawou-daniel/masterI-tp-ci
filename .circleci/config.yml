@@ -54,7 +54,7 @@ jobs:
     e2e-test:
         docker:
         - image: cimg/node:14.10.1
-          environment:
+            environment:
             DATABASE_URL: postgresql://jordan:mot_de_passe@localhost:5432/psdb
             JWT_SECRET: mot_de_passe
             API_PORT: 3000
@@ -66,11 +66,11 @@ jobs:
             POSTGRES_DB: psdb
             POSTGRES_PASSWORD: mot_de_passe
         steps:
-        - checkout
-        - restore_cache:
-            name: Restore Yarn Package Cache
-            keys:
-                - npm-v1-dependencies-{{ checksum "yarn.lock" }}
-        - run:
-            name: "E2e Test"
-            command: yarn test:e2e
+            - checkout
+            - restore_cache:
+                name: Restore Yarn Package Cache
+                keys:
+                    - npm-v1-dependencies-{{ checksum "yarn.lock" }}
+            - run:
+                name: "E2e Test"
+                command: yarn test:e2e
